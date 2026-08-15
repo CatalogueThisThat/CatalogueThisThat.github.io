@@ -1,6 +1,14 @@
 import { TRAIL_KITS, BULLET_SKIN_KITS } from './catalog.js';
 import { send } from './net.js';
 import { sfx } from './sfx.js';
+import {
+  bindMobileControls,
+  unbindMobileControls,
+  showMobileControls,
+  hideMobileControls,
+  mobileInput,
+  mobileAimAt,
+} from './mobile.js';
 
 const canvas = () => document.getElementById('arenaCanvas');
 const wrap = () => document.getElementById('arena');
@@ -60,6 +68,7 @@ export function startArena(firstSnap, id) {
   showBuffToast(firstSnap, id);
   resize();
   bind();
+  showMobileControls();
   if (!raf) loop();
 }
 
@@ -95,6 +104,7 @@ export function stopArena() {
   snap = null;
   wrap()?.classList.remove('on');
   document.body.classList.remove('in-arena');
+  hideMobileControls();
   unbind();
   killFeed = [];
   particles.length = 0;
@@ -500,15 +510,26 @@ function sendInput() {
   const h = c.height / dpr;
   mouse.worldX = mouse.x - w / 2 + cam.x;
   mouse.worldY = mouse.y - h / 2 + cam.y;
+  const pad = mobileInput();
+  const self = me();
+  let ax = mouse.worldX;
+  let ay = mouse.worldY;
+  if (pad.active) {
+    const aim = mobileAimAt(self, snap?.players, youId);
+    if (aim) {
+      ax = aim.x;
+      ay = aim.y;
+    }
+  }
   send({
     type: 'input',
-    up: keys.has('w') || keys.has('arrowup'),
-    down: keys.has('s') || keys.has('arrowdown'),
-    left: keys.has('a') || keys.has('arrowleft'),
-    right: keys.has('d') || keys.has('arrowright'),
-    ax: mouse.worldX,
-    ay: mouse.worldY,
-    shoot: mouse.down || keys.has(' '),
+    up: keys.has('w') || keys.has('arrowup') || pad.up,
+    down: keys.has('s') || keys.has('arrowdown') || pad.down,
+    left: keys.has('a') || keys.has('arrowleft') || pad.left,
+    right: keys.has('d') || keys.has('arrowright') || pad.right,
+    ax,
+    ay,
+    shoot: mouse.down || keys.has(' ') || pad.shoot,
     dash: dashQueued,
     emote: emoteQueued,
     ability: abilityQueued,
@@ -545,6 +566,7 @@ function onMove(e) {
 }
 
 function onDown(e) {
+  if (e.target?.closest?.('#mobileControls')) return;
   if (e.button === 0) mouse.down = true;
 }
 
@@ -562,6 +584,10 @@ function bind() {
   window.addEventListener('mouseup', onUp);
   window.addEventListener('resize', resize);
   window.addEventListener('blur', onUp);
+  bindMobileControls({
+    onDash: () => { dashQueued = true; },
+    onAbility: () => { abilityQueued = true; },
+  });
 }
 
 function unbind() {
@@ -573,4 +599,5 @@ function unbind() {
   window.removeEventListener('mousedown', onDown);
   window.removeEventListener('mouseup', onUp);
   window.removeEventListener('resize', resize);
+  unbindMobileControls();
 }

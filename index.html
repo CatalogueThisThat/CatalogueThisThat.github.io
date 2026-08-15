@@ -172,7 +172,7 @@
         <button class="find-match" onclick="findMatch()" id="findBtn">FIND MATCH</button>
         <button class="quick-play" onclick="quickPlay()" id="quickBtn">QUICK 1V1</button>
         <button class="cancel-find" onclick="cancelFind()" id="cancelBtn" style="display:none;">CANCEL SEARCH</button>
-        <div class="controls-hint">WASD MOVE · MOUSE AIM · CLICK FIRE · SHIFT DASH · Q ABILITY · E EMOTE</div>
+        <div class="controls-hint">WASD / JOYSTICK MOVE · MOUSE AIM · CLICK / FIRE · SHIFT / DASH · Q ABILITY · E EMOTE</div>
       </section>
     </main>
 
@@ -405,6 +405,19 @@
     </div>
     <button class="forfeit-btn" onclick="forfeitMatch()">ESC FORFEIT</button>
   </div>
+  <div id="mobileControls" class="mobile-controls" aria-hidden="true">
+    <div class="mobile-stick" id="mobileStick">
+      <div class="mobile-stick-base" id="mobileStickBase">
+        <div class="mobile-stick-knob" id="mobileStickKnob"></div>
+      </div>
+      <div class="mobile-stick-label">MOVE</div>
+    </div>
+    <div class="mobile-actions">
+      <button type="button" class="mobile-btn ability" id="mobileAbility">Q</button>
+      <button type="button" class="mobile-btn dash" id="mobileDash">DASH</button>
+      <button type="button" class="mobile-btn shoot" id="mobileShoot">FIRE</button>
+    </div>
+  </div>
 </div>
 
 <div id="results">
@@ -417,6 +430,6 @@
   </div>
 </div>
 
-  <script type="module" src="js/app.js?v=3.0.4"></script>
+  <script type="module" src="js/app.js?v=3.0.5"></script>
 </body>
 </html>
