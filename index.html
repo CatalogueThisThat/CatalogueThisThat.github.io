@@ -2,12 +2,411 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/free/">
-  <link rel="canonical" href="https://catalogthisthat.github.io/free/">
-  <title>Match Room</title>
-  <script>location.replace('/free/');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Match Room — Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <p>Moved to <a href="/free/">catalogthisthat.github.io/free</a>.</p>
+  <audio id="bgMusic" preload="auto"></audio>
+
+<div id="gate" class="on">
+  <div class="gate-card">
+    <div class="gate-kicker">MATCH ROOM</div>
+    <div class="gate-title">SIGN IN</div>
+    <div class="gate-error" id="gateError"></div>
+    <div class="gate-grid">
+      <form class="gate-col" onsubmit="loginAccount(event)">
+        <div class="gate-label">ACCOUNT</div>
+        <input id="loginId" type="text" placeholder="Username or email" required>
+        <input id="loginPass" type="password" placeholder="Password" required>
+        <button type="submit" class="find-match">SIGN IN</button>
+      </form>
+      <form class="gate-col" onsubmit="registerAccount(event)">
+        <div class="gate-label">REGISTER</div>
+        <input id="regUser" type="text" placeholder="Username" maxlength="16" required>
+        <input id="regEmail" type="email" placeholder="Email" required>
+        <input id="regPass" type="password" placeholder="Password" required>
+        <button type="submit" class="quick-play">CREATE ACCOUNT</button>
+      </form>
+      <form class="gate-col" onsubmit="guestEnter(event)">
+        <div class="gate-label">GUEST</div>
+        <input id="guestName" type="text" placeholder="Your name" maxlength="8" required>
+        <p class="gate-note">You’ll be GUEST_NAME plus four digits. Example: GUEST_ALEX5338</p>
+        <button type="submit" class="cancel-find">PLAY AS GUEST</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2.5 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16.5" cy="8.5" r="2.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 14.8c2.6.3 4.5 2.2 4.5 4.9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3.5v2.4M12 18.1v2.4M20.5 12h-2.4M5.9 12H3.5M17.7 6.3l-1.7 1.7M8 16l-1.7 1.7M17.7 17.7L16 16M8 8L6.3 6.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4.2 3.4A.6.6 0 0 1 4 19v-3H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18a2.3 2.3 0 1 1 0-4.6A2.3 2.3 0 0 1 9 18z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M17 16a2.3 2.3 0 1 1 0-4.6A2.3 2.3 0 0 1 17 16z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 15.5V5l8-1.6v9.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-mute" viewBox="0 0 24 24"><path d="M9 18a2.3 2.3 0 1 1 0-4.6A2.3 2.3 0 0 1 9 18z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 15.5V5l8-1.6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4l16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-diamond" viewBox="0 0 24 24"><path d="M6 4h12l4 5.5L12 21 2 9.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M2 9.5h20M9 4l-2.5 5.5L12 21M15 4l2.5 5.5L12 21" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 8V6a4 4 0 0 1 8 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-mask" viewBox="0 0 24 24"><path d="M4 9c0-3 3.6-5 8-5s8 2 8 5-3.6 5-8 5-8-2-8-5z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="9" r="1.1" fill="currentColor"/><circle cx="15" cy="9" r="1.1" fill="currentColor"/></symbol>
+<symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="9.5" width="17" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M12 9.5V20" stroke="currentColor" stroke-width="1.8"/><path d="M12 9.5c0-2.5-2-4.5-4-4.5s-2.5 3 0 4.5M12 9.5c0-2.5 2-4.5 4-4.5s2.5 3 0 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-sword" viewBox="0 0 24 24"><path d="M20 4L9.5 14.5M20 4l-2.5.5L17 7l-2.5.5M20 4l-.5 2.5L17 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20l4-1 2-3-2.5-2.5-3 2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1" fill="currentColor"/></symbol>
+<symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 6h4l10 12h4M3 18h4l3.5-4.2M17 6h4M17 6l-2.5 2.5M17 6l-2.5-2.5M21 18l-2.5 2.5M21 18l-2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 5H4a3 3 0 0 0 3 5M17 5h3a3 3 0 0 1-3 5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 14v3M9 20h6M9.5 17h5l.5 3h-6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5.5 8.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-3.5L14 9V3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7.5 15h9" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-cap" viewBox="0 0 24 24"><path d="M2 10l10-4 10 4-10 4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M6 12v4c0 1.5 2.7 3 6 3s6-1.5 6-3v-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8 4L4 7l2 3 2-1v11h8V9l2 1 2-3-4-3-2 2h-4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+<symbol id="i-wand" viewBox="0 0 24 24"><path d="M4 20L15 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M18 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+<symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 8 0 0 0 0 16c1.4 0 2-1 1.3-2.1-.6-1-.1-2.2 1.2-2.2h2.4c1.7 0 3.1-1.4 3.1-3.1C20 6.9 16.4 3 12 3z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="8" cy="14" r="1" fill="currentColor"/><circle cx="12.5" cy="8" r="1" fill="currentColor"/></symbol>
+<symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-medal" viewBox="0 0 24 24"><path d="M7 3l5 6-5 6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M17 3l-5 6 5 6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="16" r="5" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="i-dot-filled" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="currentColor"/></symbol>
+<symbol id="i-dot-ring" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<symbol id="i-crate" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 7l9-4 9 4M12 3v18M3 7l9 4 9-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-6-7-2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+</defs>
+</svg>
+
+<div class="app" id="app">
+
+  <div class="backdrop" aria-hidden="true">
+    <div class="spotlight spotlight-cobalt"></div>
+    <div class="spotlight spotlight-ember"></div>
+    <div class="spotlight spotlight-paper"></div>
+    <div class="halftone"></div>
+  </div>
+  <div id="toastStack"></div>
+  <div id="inviteModal">
+    <div class="invite-card">
+      <div class="invite-kicker">SQUAD INVITE</div>
+      <div class="invite-from" id="inviteFrom">ROOKIE</div>
+      <p class="invite-copy">wants you in their squad.</p>
+      <div class="invite-actions">
+        <button type="button" class="invite-accept" onclick="respondInvite(true)">ACCEPT</button>
+        <button type="button" class="invite-decline" onclick="respondInvite(false)">DECLINE</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="profile">
+      <div class="avatar" id="playerAvatar"></div>
+      <div class="profile-meta">
+        <div class="name-row">
+          <button class="name-pill" id="namePill" onclick="renamePlayer()" title="Change callsign">YEALEXK</button>
+          <span class="title-chip" id="titleChip" style="display:none;"></span>
+          <span class="rank-chip unranked" id="rankChip">UNRANKED</span>
+        </div>
+        <div class="level-row">
+          <div class="level-chip" id="levelChip">LV 1</div>
+          <div class="xp-chip" id="xpChip">0 / 400</div>
+        </div>
+        <div class="career-stats" id="careerStats">0W  0L</div>
+      </div>
+    </div>
+    <div class="live-chip" id="liveChip">CONNECTING</div>
+
+    <button class="icon-btn" title="Friends" onclick="showScreen('friends')"><svg class="icon"><use href="#i-users"/></svg></button>
+    <button class="icon-btn" title="Battle Pass" onclick="showScreen('pass')"><svg class="icon"><use href="#i-star"/></svg></button>
+    <button class="icon-btn" title="Settings" onclick="showScreen('settings')"><svg class="icon"><use href="#i-settings"/></svg></button>
+    <button class="icon-btn" title="Chat" onclick="showScreen('chat')"><svg class="icon"><use href="#i-chat"/></svg></button>
+
+    <div class="music-wrap">
+      <button type="button" class="music-pill" onclick="toggleMusic()" title="Mute / unmute">
+        <svg class="icon" id="musicIcon"><use href="#i-music"/></svg>
+        <span id="musicLabel">WORLD HOLD ON</span>
+      </button>
+      <button type="button" class="music-skip" onclick="skipMusic()" title="Skip track">SKIP</button>
+    </div>
+
+    <div class="currency">
+      <div class="icon-circle gem"><svg class="icon"><use href="#i-diamond"/></svg></div>
+      <div class="currency-value" id="gemValue">123,524</div>
+      <button class="add-btn" onclick="showScreen('shop')"><svg class="icon icon-sm"><use href="#i-plus"/></svg></button>
+    </div>
+    <div class="currency">
+      <div class="icon-circle coin"><svg class="icon"><use href="#i-coin"/></svg></div>
+      <div class="currency-value" id="coinValue">123,524</div>
+      <button class="add-btn" onclick="showScreen('shop')"><svg class="icon icon-sm"><use href="#i-plus"/></svg></button>
+    </div>
+  </header>
+
+  <div class="subscreen active" id="screen-lobby" style="display:flex;">
+    <main>
+      <section class="party-panel">
+        <div class="party-panel-head" id="partyHead">SQUAD // 1 PLAYER</div>
+        <div id="partyList"></div>
+        <div class="party-opts">
+          <label class="party-opt">
+            <span>Play Against Each Other</span>
+            <div class="toggle" id="toggleVs" onclick="togglePartyOpt('vsEachOther')"></div>
+          </label>
+          <label class="party-opt">
+            <span>Friendly Fire<br><small>+25% tokens / +15% gems on win</small></span>
+            <div class="toggle" id="toggleFf" onclick="togglePartyOpt('friendlyFire')"></div>
+          </label>
+        </div>
+        <div class="party-warn" id="partyWarn">WARNING:<br>If you use this feature to get ranked up easily you will be banned.</div>
+      </section>
+
+      <section class="mode-panel">
+        <div>
+          <div class="mode-eyebrow">GAMEMODE</div>
+          <div class="mode-title" id="modeTitle">2V2<span class="mode-value" id="modeValue">RANKED</span></div>
+          <div class="mode-blurb" id="modeBlurb">Last squad standing. No respawns.</div>
+        </div>
+        <div class="scoreboard">
+          <div class="scoreboard-label" id="scoreboardLabel">READY UP, THEN FIND MATCH</div>
+          <div class="scoreboard-timer"><span id="findTimer">0</span>S</div>
+        </div>
+        <div class="scan-bar paused" id="scanBar"></div>
+        <button class="find-match" onclick="findMatch()" id="findBtn">FIND MATCH</button>
+        <button class="quick-play" onclick="quickPlay()" id="quickBtn">QUICK 1V1</button>
+        <button class="cancel-find" onclick="cancelFind()" id="cancelBtn" style="display:none;">CANCEL SEARCH</button>
+        <div class="controls-hint">WASD MOVE · MOUSE AIM · CLICK FIRE · SHIFT DASH · Q ABILITY · E EMOTE</div>
+      </section>
+    </main>
+
+    <nav class="bottombar">
+      <button class="nav-btn nav-shop" onclick="showScreen('shop')">SHOP</button>
+      <button class="nav-btn nav-gamemode" onclick="showScreen('gamemode')">GAMEMODE</button>
+      <button class="nav-btn nav-pass" onclick="showScreen('pass')">PASS</button>
+      <button class="nav-btn nav-locker" onclick="showScreen('locker')">LOCKER</button>
+      <button class="nav-btn nav-panel" id="panelNav" onclick="showScreen('panel')" style="display:none;">PANEL</button>
+    </nav>
+  </div>
+
+  <div class="subscreen" id="screen-shop">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('lobby')">&larr;</button>
+      <div class="subscreen-title">SHOP</div>
+      <div class="subscreen-sub">PICK A COUNTER</div>
+    </div>
+    <div class="shop-hub" id="shopHub">
+      <button type="button" class="shop-hub-tile hub-pass" onclick="showScreen('pass')">
+        <span class="hub-kicker">SEASON TRACK</span>
+        <span class="hub-title">BATTLEPASS</span>
+        <span class="hub-copy">Premium rewards · free track every 5 levels</span>
+      </button>
+      <button type="button" class="shop-hub-tile hub-coins" onclick="showScreen('shop-coins')">
+        <span class="hub-kicker">TOKEN COUNTER</span>
+        <span class="hub-title">COINS</span>
+        <span class="hub-copy">Solid exclusives · packs · everyday buys</span>
+      </button>
+      <button type="button" class="shop-hub-tile hub-gems" onclick="showScreen('shop-gems')">
+        <span class="hub-kicker">PREMIUM COUNTER</span>
+        <span class="hub-title">GEMS</span>
+        <span class="hub-copy">Best cosmetics · rarer · harder to earn</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="subscreen" id="screen-shop-coins">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('shop')">&larr;</button>
+      <div class="subscreen-title">COIN SHOP</div>
+      <div class="subscreen-sub">TOKENS ONLY · NO PASS ITEMS</div>
+    </div>
+    <div class="section-label">TOKEN PACKS</div>
+    <div class="tile-grid shop-grid" id="coinIap"></div>
+    <div class="section-label">COSMETICS</div>
+    <div class="tile-grid shop-grid" id="coinItems"></div>
+  </div>
+
+  <div class="subscreen" id="screen-shop-gems">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('shop')">&larr;</button>
+      <div class="subscreen-title">GEM SHOP</div>
+      <div class="subscreen-sub">PREMIUM · NO PASS ITEMS</div>
+    </div>
+    <div class="section-label">DAILY</div>
+    <div class="tile-grid shop-grid" id="gemDaily"></div>
+    <div class="section-label">GEM PACKS</div>
+    <div class="tile-grid shop-grid" id="gemIap"></div>
+    <div class="section-label">PREMIUM COSMETICS</div>
+    <div class="tile-grid shop-grid" id="gemItems"></div>
+  </div>
+
+  <div class="subscreen" id="screen-gamemode">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('lobby')">&larr;</button>
+      <div class="subscreen-title">GAMEMODE</div>
+      <div class="subscreen-sub">SELECT TO QUEUE</div>
+    </div>
+    <div class="gamemode-split">
+      <div class="gamemode-col gamemode-col-ranked">
+        <div class="gamemode-col-head ranked">RANKED</div>
+        <div class="gamemode-cells" id="gamemodeRanked"></div>
+      </div>
+      <div class="gamemode-col gamemode-col-unranked">
+        <div class="gamemode-col-head unranked">UNRANKED</div>
+        <div class="gamemode-cells" id="gamemodeUnranked"></div>
+      </div>
+      <div class="gamemode-col gamemode-col-train">
+        <div class="gamemode-col-head train">TRAINING</div>
+        <div class="gamemode-cells" id="gamemodeTraining"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subscreen" id="screen-pass">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('shop')">&larr;</button>
+      <div class="subscreen-title">BATTLE PASS</div>
+      <div class="subscreen-sub" id="passMeta">SEASON 01</div>
+    </div>
+    <div id="passBuyRow" class="pass-buy-row">
+      <button class="find-match" id="passBuyCoins" onclick="buyPass('coins')">UNLOCK · TOKENS</button>
+      <button class="quick-play" id="passBuyGems" onclick="buyPass('gems')">UNLOCK · GEMS</button>
+      <button class="cancel-find" id="passBuyGbp" onclick="buyPass('gbp')">£3.49 · COMING SOON</button>
+    </div>
+    <div class="pass-list" id="passTiers"></div>
+  </div>
+
+  <div class="subscreen" id="screen-locker">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('lobby')">&larr;</button>
+      <div class="subscreen-title">LOCKER</div>
+      <div class="subscreen-sub">EQUIP YOUR LOADOUT</div>
+    </div>
+    <div class="section-label">SKINS</div>
+    <div class="tile-grid" id="lockerSkins"></div>
+    <div class="section-label">GUN SKINS</div>
+    <div class="tile-grid" id="lockerGunSkins"></div>
+    <div class="section-label">GUNS</div>
+    <div class="tile-grid" id="lockerGuns"></div>
+    <div class="section-label">BULLET SKINS</div>
+    <div class="tile-grid" id="lockerBullets"></div>
+    <div class="section-label">TRAILS</div>
+    <div class="tile-grid" id="lockerTrails"></div>
+    <div class="section-label">EMOTES</div>
+    <div class="tile-grid" id="lockerEmotes"></div>
+    <div class="section-label">BADGES</div>
+    <div class="tile-grid" id="lockerBadges"></div>
+    <div class="section-label">TITLES</div>
+    <div class="tile-grid" id="lockerTitles"></div>
+  </div>
+
+  <div class="subscreen" id="screen-friends">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('lobby')">&larr;</button>
+      <div class="subscreen-title">FRIENDS</div>
+      <div class="subscreen-sub">LIVE LOBBY + SAVED LIST</div>
+    </div>
+    <div class="section-label">IN LOBBY NOW</div>
+    <div class="friends-panel" id="lobbyLive"></div>
+    <div class="section-label">SAVED</div>
+    <div class="friends-panel">
+      <div class="add-friend-row">
+        <input id="friendInput" type="text" placeholder="Add friend by username&hellip;" maxlength="20">
+        <button onclick="addFriend()">ADD</button>
+      </div>
+      <div id="friendsList"></div>
+    </div>
+  </div>
+
+  <div class="subscreen" id="screen-settings">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('lobby')">&larr;</button>
+      <div class="subscreen-title">SETTINGS</div>
+    </div>
+    <div class="settings-body">
+      <div class="settings-row">
+        Music Volume
+        <div class="volume-row">
+          <input type="range" id="volumeSlider" min="0" max="100" value="50" oninput="setVolume(this.value)">
+          <span class="volume-value" id="volumeValue">50%</span>
+        </div>
+      </div>
+      <div class="settings-row">Music <div class="toggle on" id="toggleMusicRow" onclick="toggleRow(this, toggleMusicFromRow)"></div></div>
+      <div class="settings-row">Sound Effects <div class="toggle on" id="toggleSfxRow" onclick="toggleRow(this, toggleSfxFromRow)"></div></div>
+      <div class="settings-row">Push Notifications <div class="toggle" onclick="toggleRow(this)"></div></div>
+      <div class="settings-row">Voice Chat <div class="toggle on" onclick="toggleRow(this)"></div></div>
+      <div class="settings-row">Custom profile picture <div class="toggle" id="togglePfp" onclick="toggleRow(this, togglePfpFromRow)"></div></div>
+      <div class="settings-row">Profile image
+        <div class="volume-row">
+          <input type="file" id="avatarFile" accept="image/png,image/jpeg,image/webp" onchange="pickAvatar(event)">
+          <button class="reset-btn" style="margin:0" onclick="clearAvatar()">CLEAR</button>
+        </div>
+      </div>
+      <div class="settings-row">Callsign <button class="reset-btn" style="margin:0" onclick="renamePlayer()">RENAME</button></div>
+      <button class="reset-btn" onclick="resetSettings()">RESET TO DEFAULT</button>
+      <button class="reset-btn" onclick="logoutAccount()">SIGN OUT</button>
+    </div>
+  </div>
+
+  <div class="subscreen" id="screen-panel">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('lobby')">&larr;</button>
+      <div class="subscreen-title">PANEL</div>
+      <div class="subscreen-sub">ADMIN TOOLS</div>
+    </div>
+    <div class="add-friend-row">
+      <input id="adminQuery" type="text" placeholder="Search name or email&hellip;" maxlength="64">
+      <button onclick="adminSearch()">SEARCH</button>
+    </div>
+    <div id="adminList" class="friends-panel"></div>
+    <div class="section-label">ANTI-CHEAT LOGS</div>
+    <div id="adminLogs" class="friends-panel"></div>
+  </div>
+
+  <div class="subscreen" id="screen-chat">
+    <div class="subscreen-head">
+      <button class="back-btn" onclick="showScreen('lobby')">&larr;</button>
+      <div class="subscreen-title">PARTY CHAT</div>
+    </div>
+    <div class="chat-panel">
+      <div class="chat-log" id="chatLog"></div>
+      <div class="chat-input-row">
+        <input id="chatInput" type="text" placeholder="Message your squad&hellip;" maxlength="140" onkeydown="if(event.key==='Enter')sendMessage()">
+        <button class="chat-send" onclick="sendMessage()">SEND</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="arena">
+  <canvas id="arenaCanvas"></canvas>
+  <div class="arena-top">
+    <div id="hudScore" class="hud-score"></div>
+    <div id="hudTimer" class="hud-timer">3:00</div>
+  </div>
+  <div id="arenaBanner" class="arena-banner">3</div>
+  <div id="killFeed" class="kill-feed"></div>
+  <div id="buffToast" class="buff-toast" style="display:none;"></div>
+  <div class="arena-bottom">
+    <div class="hud-hp">
+      <div class="hud-hp-fill" id="hudHpFill"></div>
+      <span id="hudHpText">100 HP</span>
+    </div>
+    <div class="hud-meta">
+      <div id="hudWeapon">PULSE</div>
+      <div id="hudAbility">Q  READY</div>
+      <div id="hudCd">UNRANKED · RESPAWNS</div>
+    </div>
+    <button class="forfeit-btn" onclick="forfeitMatch()">ESC FORFEIT</button>
+  </div>
+</div>
+
+<div id="results">
+  <div class="results-card">
+    <div id="resultsBanner" class="results-banner">VICTORY</div>
+    <div id="resultsSub" class="results-sub"></div>
+    <div id="resultsRewards" class="results-rewards"></div>
+    <div id="resultsRows" class="results-rows"></div>
+    <button class="find-match" onclick="closeResults()">BACK TO LOBBY</button>
+  </div>
+</div>
+
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
