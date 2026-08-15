@@ -60,4 +60,22 @@ export const sfx = {
   ability() {
     beep({ freq: 300, dur: 0.16, type: 'sawtooth', gain: 0.05, slide: 400 });
   },
+  chestThud() {
+    beep({ freq: 90, dur: 0.12, type: 'triangle', gain: 0.07, slide: -30 });
+  },
+  chestOpen() {
+    beep({ freq: 180, dur: 0.18, type: 'sawtooth', gain: 0.05, slide: 420 });
+    setTimeout(() => beep({ freq: 880, dur: 0.2, type: 'sine', gain: 0.035, slide: 200 }), 80);
+  },
+  lootPop() {
+    beep({ freq: 740, dur: 0.09, type: 'sine', gain: 0.04, slide: 160 });
+  },
+  barTick() {
+    beep({ freq: 520, dur: 0.03, type: 'square', gain: 0.018 });
+  },
+  rankUp() {
+    beep({ freq: 220, dur: 0.2, type: 'sawtooth', gain: 0.06, slide: 300 });
+    setTimeout(() => beep({ freq: 440, dur: 0.22, type: 'sine', gain: 0.05, slide: 440 }), 90);
+    setTimeout(() => beep({ freq: 880, dur: 0.28, type: 'triangle', gain: 0.04, slide: 200 }), 180);
+  },
 };
