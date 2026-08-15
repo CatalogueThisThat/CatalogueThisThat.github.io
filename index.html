@@ -307,8 +307,8 @@
     <div class="section-label">SAVED</div>
     <div class="friends-panel">
       <div class="add-friend-row">
-        <input id="friendInput" type="text" placeholder="Add friend by username&hellip;" maxlength="20">
-        <button onclick="addFriend()">ADD</button>
+        <input id="friendInput" type="text" placeholder="Add friend by username&hellip;" maxlength="20" autocomplete="off">
+        <button type="button" onclick="addFriend()">ADD</button>
       </div>
       <div id="friendsList"></div>
     </div>
@@ -417,6 +417,6 @@
   </div>
 </div>
 
-  <script type="module" src="js/app.js?v=3.0.3"></script>
+  <script type="module" src="js/app.js?v=3.0.4"></script>
 </body>
 </html>

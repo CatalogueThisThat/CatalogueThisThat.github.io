@@ -361,9 +361,16 @@ export const ui = {
     const allOnline = Array.isArray(state.online) ? state.online : [];
     const myPartyId = state.party?.id;
     const others = allOnline.filter((p) => p && p.id && String(p.id) !== String(state.id));
+    const friendEntries = (Array.isArray(state.friends) ? state.friends : []).map((f) => (
+      typeof f === 'string' ? { id: '', name: f } : { id: f?.id || '', name: f?.name || '' }
+    )).filter((f) => f.name || f.id);
 
-    const matchOnline = (name) => {
-      const n = String(name || '').toUpperCase().replace(/[^A-Z0-9_]/g, '');
+    const matchOnline = (friend) => {
+      if (friend.id) {
+        const byId = allOnline.find((p) => String(p.id) === String(friend.id));
+        if (byId) return byId;
+      }
+      const n = String(friend.name || '').toUpperCase().replace(/[^A-Z0-9_]/g, '');
       if (!n) return null;
       return allOnline.find((p) => {
         const pn = String(p.name || '').toUpperCase();
@@ -388,10 +395,16 @@ export const ui = {
       return true;
     };
 
+    const alreadyFriend = (p) => friendEntries.some((f) =>
+      (f.id && p.id && String(f.id) === String(p.id))
+      || (f.name && p.name && String(f.name).toUpperCase() === String(p.name).toUpperCase())
+    );
+
     if (live) {
       live.innerHTML = '';
       others.forEach((p) => {
         const ok = canInvite(p);
+        const saved = alreadyFriend(p);
         const row = document.createElement('div');
         row.className = 'friend-row';
         row.innerHTML =
@@ -400,7 +413,15 @@ export const ui = {
             (p.guest ? '<span class="guest-chip">GUEST</span>' : '') +
             `<span class="rank-chip ${p.rank?.id || 'unranked'}" style="color:${p.rank?.color || '#9AA0AC'};border-color:${p.rank?.color || '#9AA0AC'}">${p.rank?.label || 'UNRANKED'}</span></span>` +
           `<span class="friend-note">${statusNote(p)}</span>` +
-          `<button class="friend-btn invite"${ok ? '' : ' disabled'}>INVITE</button>`;
+          `<button type="button" class="friend-btn add"${saved ? ' disabled' : ''}>${saved ? 'SAVED' : 'ADD'}</button>` +
+          `<button type="button" class="friend-btn invite"${ok ? '' : ' disabled'}>INVITE</button>`;
+        row.querySelector('.add').onclick = () => {
+          if (saved) {
+            ui.toast(`${p.name} is already on your list`);
+            return;
+          }
+          window.addFriend(p);
+        };
         row.querySelector('.invite').onclick = () => {
           if (!ok) {
             ui.toast(p.inMatch ? `${p.name} is in a match` : `${p.name} is already with you`);
@@ -416,25 +437,26 @@ export const ui = {
     }
     if (!wrap) return;
     wrap.innerHTML = '';
-    if (!state.friends.length) {
-      wrap.innerHTML = '<div class="friends-empty">No saved friends yet. Add them by exact callsign.</div>';
+    if (!friendEntries.length) {
+      wrap.innerHTML = '<div class="friends-empty">No saved friends yet. Add them from IN LOBBY NOW or by exact callsign.</div>';
       return;
     }
-    state.friends.forEach((name) => {
-      const hit = matchOnline(name);
+    friendEntries.forEach((friend) => {
+      const hit = matchOnline(friend);
       const on = !!hit;
       const ok = on && canInvite(hit);
+      const label = friend.name || hit?.name || 'FRIEND';
       const row = document.createElement('div');
       row.className = 'friend-row';
       row.innerHTML =
         `<svg class="icon friend-status-icon ${on ? 'online' : 'offline'}"><use href="#${on ? 'i-dot-filled' : 'i-dot-ring'}"/></svg>` +
-        `<span class="friend-name">${name}${hit?.guest ? '<span class="guest-chip">GUEST</span>' : ''}</span>` +
+        `<span class="friend-name">${label}${hit?.guest ? '<span class="guest-chip">GUEST</span>' : ''}</span>` +
         `<span class="friend-note">${on ? statusNote(hit) : 'OFFLINE'}</span>` +
-        `<button class="friend-btn invite"${ok ? '' : ' disabled'}>INVITE</button>` +
-        `<button class="friend-btn remove">&times;</button>`;
+        `<button type="button" class="friend-btn invite"${ok ? '' : ' disabled'}>INVITE</button>` +
+        `<button type="button" class="friend-btn remove">&times;</button>`;
       row.querySelector('.invite').onclick = () => {
         if (!on) {
-          ui.toast(`${name} is offline`);
+          ui.toast(`${label} is offline`);
           return;
         }
         if (!ok) {
@@ -443,7 +465,7 @@ export const ui = {
         }
         window.invitePlayer(hit);
       };
-      row.querySelector('.remove').onclick = () => window.removeFriend(name);
+      row.querySelector('.remove').onclick = () => window.removeFriend(friend);
       wrap.appendChild(row);
     });
   },
@@ -466,6 +488,7 @@ export const ui = {
   },
 
   showInvite(msg) {
+    if (!msg?.inviteId) return;
     ui.pendingInvites = ui.pendingInvites.filter((x) => x.inviteId !== msg.inviteId);
     ui.pendingInvites.push(msg);
     ui.paintInvite();
@@ -485,7 +508,8 @@ export const ui = {
       modal.classList.remove('on');
       return;
     }
-    document.getElementById('inviteFrom').textContent = current.from || 'ROOKIE';
+    const from = document.getElementById('inviteFrom');
+    if (from) from.textContent = current.from || 'ROOKIE';
     modal.classList.add('on');
   },
 

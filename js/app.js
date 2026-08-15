@@ -67,19 +67,44 @@ function equipItem(cat, id) {
   send({ type: 'locker-equip', category: cat, id });
 }
 
-function addFriend() {
-  const input = document.getElementById('friendInput');
-  const name = input.value.trim().toUpperCase();
-  if (!name) return;
-  send({ type: 'friend-add', name });
-  input.value = '';
+function requireLink() {
+  if (isOpen()) return true;
+  ui.toast('Not connected to the arena server');
+  return false;
 }
 
-function removeFriend(name) {
-  send({ type: 'friend-remove', name });
+function addFriend(nameOrPlayer, playerId = '') {
+  let name = '';
+  let id = playerId || '';
+  if (nameOrPlayer && typeof nameOrPlayer === 'object') {
+    name = String(nameOrPlayer.name || '').trim().toUpperCase();
+    id = nameOrPlayer.id || id;
+  } else if (typeof nameOrPlayer === 'string') {
+    name = nameOrPlayer.trim().toUpperCase();
+  } else {
+    const input = document.getElementById('friendInput');
+    name = (input?.value || '').trim().toUpperCase();
+    if (input) input.value = '';
+  }
+  if (!id && !name) return;
+  if (!requireLink()) return;
+  const payload = { type: 'friend-add' };
+  if (id) payload.playerId = id;
+  if (name) payload.name = name;
+  send(payload);
+}
+
+function removeFriend(friend) {
+  if (!requireLink()) return;
+  if (friend && typeof friend === 'object') {
+    send({ type: 'friend-remove', playerId: friend.id || '', name: friend.name || '' });
+    return;
+  }
+  send({ type: 'friend-remove', name: String(friend || '') });
 }
 
 function inviteFriend(name, playerId = '') {
+  if (!requireLink()) return;
   const payload = { type: 'party-invite', name };
   if (playerId) payload.playerId = playerId;
   send(payload);
@@ -90,12 +115,14 @@ function invitePlayer(player) {
     ui.toast('Player not found');
     return;
   }
+  if (!requireLink()) return;
   send({ type: 'party-invite', playerId: player.id, name: player.name });
 }
 
 function respondInvite(accept) {
   const current = ui.pendingInvites[0];
   if (!current) return;
+  if (!requireLink()) return;
   send({ type: 'party-invite-respond', inviteId: current.inviteId, accept: !!accept });
   ui.hideInvite(current.inviteId);
 }
@@ -404,8 +431,12 @@ onNet('admin-list', (msg) => {
   ui.renderAdmin();
 });
 
+onNet('toast', (msg) => {
+  if (msg?.message) ui.toast(msg.message);
+});
+
 onNet('party-invite', (msg) => {
-  sfx.ui();
+  try { sfx.ui(); } catch { /* */ }
   ui.showInvite(msg);
   ui.toast(`${msg.from || 'PLAYER'} invited you to a squad`);
 });
@@ -492,6 +523,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (pfp) pfp.classList.toggle('on', localStorage.getItem('match-room-show-pfp') !== '0');
   await api.ping();
   ui.seedChat();
+  const friendInput = document.getElementById('friendInput');
+  if (friendInput) {
+    friendInput.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        addFriend();
+      }
+    });
+  }
   if (localStorage.getItem('match-room-token')) {
     showGate(false);
     connect();

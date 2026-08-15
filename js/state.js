@@ -16,7 +16,7 @@ export function applyLobby(msg) {
     xpInto: you.xpInto ?? state.xpInto,
     xpNeed: you.xpNeed ?? state.xpNeed,
     stats: you.stats || state.stats,
-    friends: you.friends || state.friends,
+    friends: Array.isArray(you.friends) ? you.friends : state.friends,
     dailyClaimed: you.dailyClaimed ?? state.dailyClaimed,
     isCaptain: you.isCaptain ?? state.isCaptain,
     party: msg.party || state.party,

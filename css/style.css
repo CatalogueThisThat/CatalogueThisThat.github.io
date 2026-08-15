@@ -442,6 +442,7 @@ nav.bottombar{ display:flex; gap:0; border-top:3px solid var(--stroke); }
 .friend-btn:disabled{ opacity:0.4; cursor:not-allowed; }
 .friend-btn:disabled:hover{ background:var(--panel-2); }
 .friend-btn.remove:hover{ background:var(--ember-deep); }
+.friend-btn.add:hover{ background:var(--cobalt); }
 .friends-empty{ padding:30px; text-align:center; color:var(--text-mute); font-family:var(--font-body); font-size:14px; }
 
 .settings-body{ background:var(--panel); border:3px solid var(--stroke); padding:8px; display:flex; flex-direction:column; }

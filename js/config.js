@@ -73,7 +73,7 @@ function playerName() {
 }
 
 export const CONFIG = {
-  VERSION: '3.0.3',
+  VERSION: '3.0.4',
   get API_BASE_URL() {
     return resolveApiBase();
   },
