@@ -145,10 +145,10 @@ header.topbar{
 .hub-title{ font-family:var(--font-display); font-weight:700; font-size:42px; letter-spacing:1px; line-height:1; }
 .hub-copy{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.4px; max-width:28ch; opacity:0.9; }
 .shop-grid .tile-blurb{
-  font-family:var(--font-mono); font-size:10px; color:var(--text-mute); letter-spacing:0.3px; line-height:1.35;
-  min-height:2.6em;
+  font-family:var(--font-mono); font-size:10px; color:var(--text-mute); letter-spacing:0.3px; line-height:1.4;
+  min-height:4.2em; max-width:34ch;
 }
-.tile.shop-featured{ min-height:180px; }
+.tile.shop-featured{ min-height:220px; }
 .tile.shop-featured .tile-name{ font-size:16px; }
 .party-name .rank-chip, .friend-name .rank-chip{
   display:inline-block; margin-left:8px; vertical-align:middle; font-size:9px;
