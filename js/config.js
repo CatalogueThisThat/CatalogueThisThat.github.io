@@ -5,12 +5,30 @@ function isGitHubPages() {
 /** Public HTTPS API for GitHub Pages (Tailscale Funnel → lobby backend). */
 const GHP_API_BASE = 'https://localhost-0.tailaaf6e6.ts.net/api';
 
+function looksLikeAbsoluteApi(url) {
+  return /^https?:\/\//i.test(String(url || ''));
+}
+
 function resolveApiBase() {
   if (typeof window === 'undefined') return '/api';
+
+  // GitHub Pages must never call same-origin /api (static host → 405 on POST).
+  if (isGitHubPages()) {
+    const override = window.__API_BASE_URL__ || localStorage.getItem('API_BASE_URL');
+    if (looksLikeAbsoluteApi(override) && !String(override).includes('github.io')) {
+      return override.replace(/\/$/, '');
+    }
+    try {
+      localStorage.removeItem('API_BASE_URL');
+    } catch {
+      /* ignore */
+    }
+    return GHP_API_BASE;
+  }
+
   if (window.__API_BASE_URL__) return window.__API_BASE_URL__;
   const stored = localStorage.getItem('API_BASE_URL');
   if (stored) return stored;
-  if (isGitHubPages()) return GHP_API_BASE;
   const { hostname, port } = window.location;
   if (hostname === '100.74.187.100' || hostname.endsWith('.ts.net')) return '/api';
   if (port === '3000' || port === '') return '/api';
@@ -55,8 +73,10 @@ function playerName() {
 }
 
 export const CONFIG = {
-  VERSION: '3.0.0',
-  API_BASE_URL: resolveApiBase(),
+  VERSION: '3.0.1',
+  get API_BASE_URL() {
+    return resolveApiBase();
+  },
   get WS_URL() {
     return resolveWsUrl(this.API_BASE_URL);
   },
