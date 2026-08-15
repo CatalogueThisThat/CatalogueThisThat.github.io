@@ -2,15 +2,18 @@ function isGitHubPages() {
   return typeof window !== 'undefined' && window.location.hostname.endsWith('github.io');
 }
 
+/** Public HTTPS API for GitHub Pages (Tailscale Funnel → lobby backend). */
+const GHP_API_BASE = 'https://localhost-0.tailaaf6e6.ts.net/api';
+
 function resolveApiBase() {
   if (typeof window === 'undefined') return '/api';
-  if (isGitHubPages()) return '';
   if (window.__API_BASE_URL__) return window.__API_BASE_URL__;
+  const stored = localStorage.getItem('API_BASE_URL');
+  if (stored) return stored;
+  if (isGitHubPages()) return GHP_API_BASE;
   const { hostname, port } = window.location;
   if (hostname === '100.74.187.100' || hostname.endsWith('.ts.net')) return '/api';
   if (port === '3000' || port === '') return '/api';
-  const stored = localStorage.getItem('API_BASE_URL');
-  if (stored) return stored;
   return 'http://localhost:3000/api';
 }
 
