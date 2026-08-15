@@ -73,9 +73,10 @@ function playerName() {
 }
 
 export const CONFIG = {
-  VERSION: '3.1.0',
   SITE_HOST: 'cataloguethisthat.github.io',
   SITE_ORIGIN: 'https://cataloguethisthat.github.io',
+  SITE_PATH: '/free',
+  VERSION: '3.1.1',
   get API_BASE_URL() {
     return resolveApiBase();
   },
