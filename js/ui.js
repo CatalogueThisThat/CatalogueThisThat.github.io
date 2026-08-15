@@ -8,6 +8,7 @@ import {
   BATTLE_PASS,
   rewardLabel,
 } from './catalog.js';
+import { rankChipHtml, rankIconHtml, normalizeRank } from './ranks.js';
 
 export const ui = {
   pendingInvites: [],
@@ -50,11 +51,13 @@ export const ui = {
     document.getElementById('xpChip').textContent = `${state.xpInto || 0} / ${state.xpNeed || 400}`;
     const rankChip = document.getElementById('rankChip');
     if (rankChip) {
-      const rank = state.rank || { id: 'unranked', label: 'UNRANKED', color: '#9AA0AC' };
-      rankChip.textContent = rank.label;
+      const rank = normalizeRank(state.rank || { id: 'unranked', label: 'UNRANKED', color: '#9AA0AC' });
       rankChip.className = `rank-chip ${rank.id}`;
       rankChip.style.color = rank.color;
       rankChip.style.borderColor = rank.color;
+      rankChip.innerHTML =
+        rankIconHtml(rank, { size: 22, className: 'rank-icon-inline' }) +
+        `<span class="rank-chip-label">${rank.label}</span>`;
     }
     const titleChip = document.getElementById('titleChip');
     if (titleChip) {
@@ -120,7 +123,7 @@ export const ui = {
           (m.id === state.party.leader ? '<span class="captain-tag">CAPTAIN</span>' : '') +
           `<div class="party-avatar"></div>` +
         `</div>` +
-        `<span class="party-name">${m.name}<span class="rank-chip ${m.rank?.id || 'unranked'}" style="color:${m.rank?.color || '#9AA0AC'};border-color:${m.rank?.color || '#9AA0AC'}">${m.rank?.label || 'UNRANKED'}</span></span>` +
+        `<span class="party-name">${m.name}${rankChipHtml(m.rank || { id: 'unranked', label: 'UNRANKED', color: '#9AA0AC' }, { size: 18 })}</span>` +
         (canPromote ? `<button type="button" class="promote-btn" data-promote="${m.id}">PROMOTE</button>` : '') +
         `<button class="status-tag ${ready ? 'status-ready' : 'status-notready'}${m.id === state.id ? ' you' : ''}"` +
           (m.id === state.id ? ' onclick="toggleReady()"' : '') +
@@ -411,7 +414,7 @@ export const ui = {
           `<svg class="icon friend-status-icon online"><use href="#i-dot-filled"/></svg>` +
           `<span class="friend-name">${p.name}` +
             (p.guest ? '<span class="guest-chip">GUEST</span>' : '') +
-            `<span class="rank-chip ${p.rank?.id || 'unranked'}" style="color:${p.rank?.color || '#9AA0AC'};border-color:${p.rank?.color || '#9AA0AC'}">${p.rank?.label || 'UNRANKED'}</span></span>` +
+            `${rankChipHtml(p.rank || { id: 'unranked', label: 'UNRANKED', color: '#9AA0AC' }, { size: 18 })}</span>` +
           `<span class="friend-note">${statusNote(p)}</span>` +
           `<button type="button" class="friend-btn add"${saved ? ' disabled' : ''}>${saved ? 'SAVED' : 'ADD'}</button>` +
           `<button type="button" class="friend-btn invite"${ok ? '' : ' disabled'}>INVITE</button>`;

@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=3.0.8">
 </head>
 <body>
   <audio id="bgMusic" preload="auto"></audio>
@@ -426,10 +426,46 @@
     <div id="resultsSub" class="results-sub"></div>
     <div id="resultsRewards" class="results-rewards"></div>
     <div id="resultsRows" class="results-rows"></div>
-    <button class="find-match" onclick="closeResults()">BACK TO LOBBY</button>
+    <button class="find-match" id="resultsContinue" onclick="closeResults()">BACK TO LOBBY</button>
   </div>
 </div>
 
-  <script type="module" src="js/app.js?v=3.0.7"></script>
+<div id="rewardCinema" aria-live="polite">
+  <button type="button" class="reward-skip" onclick="skipRewardCinema()">SKIP</button>
+
+  <div class="reward-phase" data-phase="chest">
+    <div class="chest-stage">
+      <div class="chest">
+        <div class="chest-lid"></div>
+        <div class="chest-body">
+          <div class="chest-lock"></div>
+        </div>
+      </div>
+      <div class="chest-glow"></div>
+    </div>
+    <div class="chest-title">MATCH REWARDS</div>
+    <div id="chestLoot" class="chest-loot"></div>
+  </div>
+
+  <div class="reward-phase" data-phase="rank">
+    <div class="rank-kicker">RANK PROGRESS</div>
+    <div id="rankHero" class="rank-hero"></div>
+    <div id="rankSub" class="rank-sub"></div>
+    <div class="rank-bar-wrap">
+      <div class="rank-bar"><div id="rankBarFill" class="rank-bar-fill"></div></div>
+      <div id="rankBarPct" class="rank-bar-pct">0%</div>
+    </div>
+  </div>
+
+  <div class="reward-phase" data-phase="rankup">
+    <div id="rankFlash" class="rank-flash"></div>
+    <div class="rank-reveal-wrap">
+      <div class="rank-up-kicker">NEW RANK</div>
+      <div id="rankRevealHero" class="rank-hero"></div>
+    </div>
+  </div>
+</div>
+
+  <script type="module" src="js/app.js?v=3.0.8"></script>
 </body>
 </html>

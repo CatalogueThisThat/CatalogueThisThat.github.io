@@ -9,6 +9,8 @@ import {
   mobileInput,
   mobileAimAt,
 } from './mobile.js';
+import { playRewardCinema, requestRewardSkip, isRewardCinemaOpen } from './rewards.js';
+import { rankIconHtml, normalizeRank } from './ranks.js';
 
 const canvas = () => document.getElementById('arenaCanvas');
 const wrap = () => document.getElementById('arena');
@@ -116,26 +118,47 @@ export function stopArena() {
   if (buff) buff.style.display = 'none';
 }
 
+let pendingRewards = null;
+let cinemaStarted = false;
+
 export function showResults(results, you) {
   const el = document.getElementById('results');
   el.classList.add('on');
+  cinemaStarted = false;
+  pendingRewards = null;
   const myId = you?.id || youId;
   const mine = results.players.find((p) => p.id === myId) || {};
   const won = mine.team === results.winner;
   const rw = mine.rewards || {};
+  const btn = document.getElementById('resultsContinue');
+  const rewardsEl = document.getElementById('resultsRewards');
+
   if (results.aborted) {
     document.getElementById('resultsBanner').textContent = 'ABORTED';
     document.getElementById('resultsBanner').className = 'results-banner loss';
     document.getElementById('resultsSub').textContent = results.abortReason || 'Anti-cheat aborted the match';
-    document.getElementById('resultsRewards').textContent = 'No rank or rewards.';
+    rewardsEl.textContent = 'No rank or rewards.';
+    if (btn) btn.textContent = 'BACK TO LOBBY';
   } else {
     document.getElementById('resultsBanner').textContent = results.training ? 'RANGE COMPLETE' : (won ? 'VICTORY' : 'DEFEAT');
     document.getElementById('resultsBanner').className = 'results-banner ' + (won ? 'win' : 'loss');
     document.getElementById('resultsSub').textContent =
       `${results.mode.label} ${results.mode.value}  ·  ${results.teamScore[0]} – ${results.teamScore[1]}`;
-    document.getElementById('resultsRewards').textContent = results.training
-      ? 'Training — no XP or currency.'
-      : `+${rw.xp || 0} XP   +${rw.coins || 0} TOKENS   +${rw.gems || 0} GEMS   ${rw.mmrDelta >= 0 ? '+' : ''}${rw.mmrDelta || 0} MMR   ${rw.rank?.label || ''}${rw.unlocked ? `   ·  ${rw.unlocked}` : ''}`;
+    if (results.training) {
+      rewardsEl.textContent = 'Training — no XP or currency.';
+      if (btn) btn.textContent = 'BACK TO LOBBY';
+    } else {
+      pendingRewards = rw;
+      const rank = normalizeRank(rw.rank);
+      rewardsEl.innerHTML =
+        `<div class="results-reward-hint">Rewards ready — chest opening next</div>` +
+        `<div class="results-rank-preview">${rankIconHtml(rank, { size: 40 })}` +
+          `<span style="color:${rank.color}">${rank.label}</span>` +
+          (rw.mmrDelta != null ? `<span class="mmr-delta">${rw.mmrDelta >= 0 ? '+' : ''}${rw.mmrDelta} MMR</span>` : '') +
+        `</div>` +
+        (rw.unlocked ? `<div class="results-unlock">${rw.unlocked}</div>` : '');
+      if (btn) btn.textContent = 'CLAIM REWARDS';
+    }
   }
   const body = document.getElementById('resultsRows');
   body.innerHTML = results.players
@@ -146,6 +169,31 @@ export function showResults(results, you) {
       return `<div class="result-row team-${p.team}${meRow}"><span>${p.name}${p.isBot ? ' · BOT' : ''}</span><span>${tag}</span><span>${p.kills} / ${p.deaths}</span><span>${p.dmg} DMG</span></div>`;
     })
     .join('');
+}
+
+/** Called by CONTINUE / CLAIM — runs chest→rank cinema then returns to lobby. */
+export async function continueResults() {
+  if (isRewardCinemaOpen()) return;
+  const btn = document.getElementById('resultsContinue');
+  if (pendingRewards && !cinemaStarted) {
+    cinemaStarted = true;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'OPENING…';
+    }
+    try {
+      await playRewardCinema(pendingRewards);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+  hideResults();
+  pendingRewards = null;
+  cinemaStarted = false;
+}
+
+export function skipRewardCinema() {
+  requestRewardSkip();
 }
 
 export function hideResults() {

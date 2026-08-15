@@ -3,7 +3,7 @@ import { api } from './api.js';
 import { state, applyLobby } from './state.js';
 import { ui } from './ui.js';
 import { connect, disconnect, onNet, send, isOpen } from './net.js';
-import { startArena, applySnap, stopArena, showResults, hideResults, isPlaying } from './game.js';
+import { startArena, applySnap, stopArena, showResults, hideResults, isPlaying, continueResults, skipRewardCinema } from './game.js';
 import { sfx } from './sfx.js';
 import { createLobbyMusic } from './music.js';
 
@@ -221,8 +221,8 @@ async function logoutAccount() {
   showGate(true);
 }
 
-function closeResults() {
-  hideResults();
+async function closeResults() {
+  await continueResults();
   stopArena();
   ui.showScreen('lobby');
   lobbyMusic.resumeAfterMatch();
@@ -499,6 +499,7 @@ Object.assign(window, {
   guestEnter,
   logoutAccount,
   closeResults,
+  skipRewardCinema,
   forfeitMatch,
   toggleRow,
   toggleMusicFromRow,
