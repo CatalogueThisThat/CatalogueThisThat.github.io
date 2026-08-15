@@ -88,10 +88,6 @@
       animation: ruleGrow 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1.15s forwards;
     }
     @keyframes ruleGrow { to { width: min(280px, 55vw); } }
-    .intro-sub {
-      font-size: 11px; letter-spacing: 4px; color: var(--mute);
-      opacity: 0; animation: fadeUp 0.5s ease 1.45s forwards;
-    }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
@@ -169,17 +165,26 @@
     }
     .game-thumb {
       aspect-ratio: 16 / 9; width: 100%;
-      background: #0a0b10 center/cover no-repeat;
+      background: #12141A;
       position: relative; overflow: hidden;
+      display: grid; place-items: center;
     }
-    .game-thumb::after {
-      content: ""; position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(12,14,20,0.55) 100%);
-      opacity: 0.85; pointer-events: none;
+    .thumb-art {
+      width: 78%; height: 54%;
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative;
     }
-    .game-tile:hover .game-thumb {
-      filter: brightness(1.08);
+    .thumb-art::before {
+      content: ""; position: absolute; left: 18%; right: 18%; top: 50%;
+      border-top: 2px dashed #3a4150;
     }
+    .thumb-dot {
+      width: clamp(28px, 18%, 48px); aspect-ratio: 1; border-radius: 50%;
+      border: 3px solid #0A0B0E; position: relative; z-index: 1;
+    }
+    .thumb-dot.cobalt { background: var(--cobalt); }
+    .thumb-dot.ember { background: var(--ember); }
+    .game-tile:hover .game-thumb { filter: brightness(1.06); }
     .game-play {
       position: absolute; right: 12px; bottom: 12px; z-index: 1;
       font-family: var(--font-mono); font-weight: 700; font-size: 10px; letter-spacing: 2px;
@@ -205,7 +210,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      #intro, .intro-mark, .intro-line span, .intro-rule, .intro-sub, .intro-skip, .game-tile {
+      #intro, .intro-mark, .intro-line span, .intro-rule, .intro-skip, .game-tile {
         animation: none !important; opacity: 1 !important; transform: none !important; width: auto;
       }
       .intro-rule { width: min(280px, 55vw); }
@@ -222,7 +227,6 @@
       <div class="intro-line catalogue"><span>CATALOGUE</span></div>
       <div class="intro-line thisthat"><span>THIS THAT</span></div>
       <div class="intro-rule" aria-hidden="true"></div>
-      <div class="intro-sub">A CATALOGUE OF GAMES</div>
     </div>
   </div>
 
@@ -236,14 +240,17 @@
     </header>
 
     <div class="shelf-grid">
-      <a class="game-tile" href="/free/" style="--i:0" aria-label="Play Match Room">
-        <div class="game-thumb" style="background-image:url('assets/match-room-thumb.jpg')">
+      <a class="game-tile" href="/free/" style="--i:0" aria-label="Play Free">
+        <div class="game-thumb">
+          <div class="thumb-art" aria-hidden="true">
+            <span class="thumb-dot cobalt"></span>
+            <span class="thumb-dot ember"></span>
+          </div>
           <span class="game-play">PLAY</span>
         </div>
         <div class="game-meta">
-          <div class="game-tag">FREE · ARENA</div>
-          <div class="game-title">Match Room</div>
-          <p class="game-blurb">Squad up, climb ranks, spend loot. Cobalt vs Ember.</p>
+          <div class="game-tag">ARENA</div>
+          <div class="game-title">Free</div>
         </div>
       </a>
     </div>
@@ -274,7 +281,7 @@
 
       skip.addEventListener('click', finish);
       // Auto-advance after the beat lands
-      setTimeout(finish, 2800);
+      setTimeout(finish, 2200);
     })();
   </script>
 </body>
