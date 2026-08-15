@@ -453,6 +453,14 @@ nav.bottombar{ display:flex; gap:0; border-top:3px solid var(--stroke); }
 .reset-btn{ margin:16px 18px 4px; align-self:flex-start; background:transparent; border:2px solid var(--stroke); color:var(--paper); font-family:var(--font-mono); font-weight:700; font-size:12px; letter-spacing:1px; padding:9px 16px; cursor:pointer; }
 .reset-btn:hover{ background:var(--ember-deep); }
 .admin-row{ flex-wrap:wrap; }
+.admin-self-tools{ margin-bottom:14px; }
+.admin-self-actions{ display:flex; flex-wrap:wrap; gap:6px; padding:0 0 12px; }
+.admin-self-actions button{
+  font-family:var(--font-mono); font-weight:700; font-size:11px; letter-spacing:0.5px;
+  border:2px solid var(--stroke); background:var(--panel); color:var(--paper);
+  padding:8px 12px; cursor:pointer;
+}
+.admin-self-actions button:hover{ background:var(--cobalt); }
 .admin-actions{ display:flex; flex-wrap:wrap; gap:6px; width:100%; }
 .admin-actions button{
   font-family:var(--font-mono); font-size:10px; letter-spacing:0.4px; padding:6px 8px;

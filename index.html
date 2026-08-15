@@ -349,6 +349,15 @@
       <div class="subscreen-title">PANEL</div>
       <div class="subscreen-sub">ADMIN TOOLS</div>
     </div>
+    <div class="admin-self-tools">
+      <div class="section-label">YOUR ACCOUNT</div>
+      <div class="admin-actions admin-self-actions">
+        <button type="button" onclick="adminSelf('max-coins')">MAX TOKENS</button>
+        <button type="button" onclick="adminSelf('max-gems')">MAX GEMS</button>
+        <button type="button" onclick="adminSelf('max-currency')">MAX BOTH</button>
+        <button type="button" onclick="adminSelf('elevate')">OWNER KIT</button>
+      </div>
+    </div>
     <div class="add-friend-row">
       <input id="adminQuery" type="text" placeholder="Search name or email&hellip;" maxlength="64">
       <button onclick="adminSearch()">SEARCH</button>
@@ -407,6 +416,6 @@
   </div>
 </div>
 
-  <script type="module" src="js/app.js?v=3.0.1"></script>
+  <script type="module" src="js/app.js?v=3.0.2"></script>
 </body>
 </html>

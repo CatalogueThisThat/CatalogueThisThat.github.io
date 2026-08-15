@@ -131,6 +131,8 @@ function showGate(on) {
   document.body.classList.toggle('signed-in', !on);
   const gate = document.getElementById('gate');
   if (gate) gate.classList.toggle('on', on);
+  if (on) lobbyMusic.pauseForMatch();
+  else startMusic();
 }
 
 function saveSession(data) {
@@ -254,6 +256,14 @@ function adminAct(playerId, action) {
     payload.gems = Number(prompt('Gems to remove', '0')) || 0;
   }
   send(payload);
+}
+
+function adminSelf(action) {
+  if (!state.id) {
+    ui.toast('Not signed in');
+    return;
+  }
+  adminAct(state.id, action);
 }
 
 function toggleRow(el, cb) {
@@ -434,6 +444,7 @@ Object.assign(window, {
   clearAvatar,
   adminSearch,
   adminAct,
+  adminSelf,
   respondInvite,
   sendMessage,
   renamePlayer,
@@ -462,7 +473,6 @@ setInterval(() => {
 }, 500);
 
 document.addEventListener('DOMContentLoaded', async () => {
-  startMusic();
   startBackdrop();
   const sfxToggle = document.getElementById('toggleSfxRow');
   if (sfxToggle) sfxToggle.classList.toggle('on', sfx.enabled);

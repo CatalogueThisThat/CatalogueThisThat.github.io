@@ -497,6 +497,10 @@ export const ui = {
           `<button data-a="only-train">TRAIN-ONLY ${p.matchesOnlyTrain ? 'ON' : 'OFF'}</button>` +
           `<button data-a="forfeit">FORFEIT</button>` +
           `<button data-a="reset-rank">RESET RANK</button>` +
+          `<button data-a="max-coins">+TOKENS</button>` +
+          `<button data-a="max-gems">+GEMS</button>` +
+          `<button data-a="max-currency">MAX $$</button>` +
+          `<button data-a="elevate">OWNER KIT</button>` +
         `</div>`;
       row.querySelectorAll('button').forEach((btn) => {
         btn.onclick = () => window.adminAct(p.id, btn.dataset.a);

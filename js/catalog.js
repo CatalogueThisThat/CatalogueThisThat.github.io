@@ -168,6 +168,7 @@ export const DEFAULT_LOCKER = {
     { id: 'grinder', name: 'GRINDER', icon: 'i-medal', owned: false },
     { id: 'sovereign', name: 'SOVEREIGN', icon: 'i-trophy', owned: false },
     { id: 'mythic', name: 'MYTHIC', icon: 'i-star', owned: false },
+    { id: 'owner', name: 'OWNER', icon: 'i-trophy', owned: false },
   ],
 };
 
