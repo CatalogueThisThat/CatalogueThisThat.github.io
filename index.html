@@ -6,6 +6,8 @@
   <title>Cataloguethisthat</title>
   <meta name="description" content="Cataloguethisthat — a catalogue of games.">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -55,14 +57,16 @@
       display: flex; flex-direction: column; align-items: center; gap: 18px;
     }
     .intro-mark {
-      width: 72px; height: 72px; border: 3px solid var(--paper);
+      width: 88px; height: 88px; border: 3px solid var(--paper);
       display: grid; place-items: center;
-      font-family: var(--font-display); font-weight: 800; font-size: 34px;
-      letter-spacing: -1px;
       opacity: 0; transform: scale(0.6) rotate(-8deg);
       animation: markIn 0.7s cubic-bezier(0.16, 1.1, 0.3, 1) 0.15s forwards;
       box-shadow: 0 0 40px rgba(47,107,255,0.35);
-      background: linear-gradient(145deg, rgba(47,107,255,0.35), rgba(255,107,44,0.2));
+      background: #000;
+      overflow: hidden; padding: 8px;
+    }
+    .intro-mark img {
+      width: 100%; height: 100%; object-fit: contain; display: block;
     }
     @keyframes markIn {
       to { opacity: 1; transform: scale(1) rotate(0); }
@@ -223,7 +227,7 @@
   <div id="intro" role="dialog" aria-label="Cataloguethisthat intro">
     <button type="button" class="intro-skip" id="introSkip">SKIP</button>
     <div class="intro-stage">
-      <div class="intro-mark" aria-hidden="true">C</div>
+      <div class="intro-mark" aria-hidden="true"><img src="assets/favicon.png" alt=""></div>
       <div class="intro-line catalogue"><span>CATALOGUE</span></div>
       <div class="intro-line thisthat"><span>THIS THAT</span></div>
       <div class="intro-rule" aria-hidden="true"></div>
