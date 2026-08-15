@@ -5,6 +5,7 @@ export const LOBBY_TRACKS = [
   { id: 'gypsy-woman', title: 'GYPSY WOMAN', src: 'assets/audio/gypsy-woman.mp3' },
   { id: 'supermassive', title: 'SUPERMASSIVE BLACK HOLE', src: 'assets/audio/supermassive-black-hole.mp3' },
   { id: 'you-spin', title: 'YOU SPIN ME ROUND', src: 'assets/audio/you-spin-me-round.mp3' },
+  { id: 'down-under', title: 'DOWN UNDER', src: 'assets/audio/down-under.mp3' },
 ];
 
 export function formatTrackLabel(title) {
