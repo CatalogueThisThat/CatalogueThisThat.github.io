@@ -79,8 +79,18 @@ function removeFriend(name) {
   send({ type: 'friend-remove', name });
 }
 
-function inviteFriend(name) {
-  send({ type: 'friend-invite', name });
+function inviteFriend(name, playerId = '') {
+  const payload = { type: 'party-invite', name };
+  if (playerId) payload.playerId = playerId;
+  send(payload);
+}
+
+function invitePlayer(player) {
+  if (!player?.id) {
+    ui.toast('Player not found');
+    return;
+  }
+  send({ type: 'party-invite', playerId: player.id, name: player.name });
 }
 
 function respondInvite(accept) {
@@ -385,10 +395,7 @@ onNet('presence', (msg) => {
   if (Array.isArray(msg.online)) state.online = msg.online;
   if (msg.liveMatches != null) state.liveMatches = msg.liveMatches;
   ui.renderProfile();
-  const friendsScreen = document.getElementById('screen-friends');
-  if (friendsScreen?.classList.contains('active') || friendsScreen?.style.display === 'flex') {
-    ui.renderFriends();
-  }
+  ui.renderFriends();
 });
 
 onNet('admin-list', (msg) => {
@@ -397,7 +404,11 @@ onNet('admin-list', (msg) => {
   ui.renderAdmin();
 });
 
-onNet('party-invite', (msg) => ui.showInvite(msg));
+onNet('party-invite', (msg) => {
+  sfx.ui();
+  ui.showInvite(msg);
+  ui.toast(`${msg.from || 'PLAYER'} invited you to a squad`);
+});
 
 onNet('party-invite-gone', (msg) => ui.hideInvite(msg.inviteId));
 
@@ -438,6 +449,7 @@ Object.assign(window, {
   addFriend,
   removeFriend,
   inviteFriend,
+  invitePlayer,
   togglePartyOpt,
   togglePfpFromRow,
   pickAvatar,

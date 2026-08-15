@@ -432,7 +432,11 @@ nav.bottombar{ display:flex; gap:0; border-top:3px solid var(--stroke); }
 .friend-status-icon{ width:22px; height:22px; flex-shrink:0; }
 .friend-status-icon.online{ color:var(--cobalt); }
 .friend-status-icon.offline{ color:var(--text-mute); }
-.friend-name{ font-family:var(--font-display); font-weight:700; font-size:15px; color:var(--paper); flex:1; }
+.friend-name{ font-family:var(--font-display); font-weight:700; font-size:15px; color:var(--paper); flex:1; display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.guest-chip{
+  font-family:var(--font-mono); font-size:10px; letter-spacing:1px; font-weight:700;
+  border:2px solid var(--stroke); padding:2px 6px; color:var(--text-mute); background:var(--panel);
+}
 .friend-note{ font-family:var(--font-mono); font-size:10px; color:var(--text-mute); }
 .friend-btn{ font-family:var(--font-mono); font-weight:700; font-size:11px; border:2px solid var(--stroke); background:var(--panel-2); color:var(--paper); padding:7px 12px; cursor:pointer; }
 .friend-btn:disabled{ opacity:0.4; cursor:not-allowed; }
@@ -470,7 +474,7 @@ nav.bottombar{ display:flex; gap:0; border-top:3px solid var(--stroke); }
 .nav-panel{ margin-left:auto; }
 
 /* ---------- TOAST ---------- */
-#toastStack{ position:fixed; bottom:26px; right:26px; z-index:50; display:flex; flex-direction:column; gap:12px; align-items:flex-end; }
+#toastStack{ position:fixed; bottom:26px; right:26px; z-index:130; display:flex; flex-direction:column; gap:12px; align-items:flex-end; }
 .toast-item{
   background:var(--paper); color:var(--ink); border:4px solid var(--stroke);
   font-family:var(--font-mono); font-weight:700; font-size:17px; letter-spacing:0.3px;
@@ -482,7 +486,7 @@ nav.bottombar{ display:flex; gap:0; border-top:3px solid var(--stroke); }
 @keyframes toastOut{ to{ opacity:0; transform:translateY(-8px) rotate(-2deg);} }
 
 #inviteModal{
-  display:none; position:fixed; inset:0; z-index:60; align-items:center; justify-content:center;
+  display:none; position:fixed; inset:0; z-index:120; align-items:center; justify-content:center;
   padding:24px; background:rgba(18,20,26,0.72);
 }
 #inviteModal.on{ display:flex; }

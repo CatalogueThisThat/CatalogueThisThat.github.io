@@ -41,7 +41,20 @@
   </div>
 </div>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<div id="toastStack"></div>
+<div id="inviteModal">
+  <div class="invite-card">
+    <div class="invite-kicker">SQUAD INVITE</div>
+    <div class="invite-from" id="inviteFrom">ROOKIE</div>
+    <p class="invite-copy">wants you in their squad.</p>
+    <div class="invite-actions">
+      <button type="button" class="invite-accept" onclick="respondInvite(true)">ACCEPT</button>
+      <button type="button" class="invite-decline" onclick="respondInvite(false)">DECLINE</button>
+    </div>
+  </div>
+</div>
+
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
 <defs>
 <symbol id="i-users" viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2.5 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16.5" cy="8.5" r="2.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 14.8c2.6.3 4.5 2.2 4.5 4.9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
 <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3.5v2.4M12 18.1v2.4M20.5 12h-2.4M5.9 12H3.5M17.7 6.3l-1.7 1.7M8 16l-1.7 1.7M17.7 17.7L16 16M8 8L6.3 6.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
@@ -82,18 +95,6 @@
     <div class="spotlight spotlight-ember"></div>
     <div class="spotlight spotlight-paper"></div>
     <div class="halftone"></div>
-  </div>
-  <div id="toastStack"></div>
-  <div id="inviteModal">
-    <div class="invite-card">
-      <div class="invite-kicker">SQUAD INVITE</div>
-      <div class="invite-from" id="inviteFrom">ROOKIE</div>
-      <p class="invite-copy">wants you in their squad.</p>
-      <div class="invite-actions">
-        <button type="button" class="invite-accept" onclick="respondInvite(true)">ACCEPT</button>
-        <button type="button" class="invite-decline" onclick="respondInvite(false)">DECLINE</button>
-      </div>
-    </div>
   </div>
 
   <header class="topbar">
@@ -416,6 +417,6 @@
   </div>
 </div>
 
-  <script type="module" src="js/app.js?v=3.0.2"></script>
+  <script type="module" src="js/app.js?v=3.0.3"></script>
 </body>
 </html>

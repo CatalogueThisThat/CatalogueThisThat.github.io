@@ -359,6 +359,7 @@ export const ui = {
     const wrap = document.getElementById('friendsList');
     const live = document.getElementById('lobbyLive');
     const allOnline = Array.isArray(state.online) ? state.online : [];
+    const myPartyId = state.party?.id;
     const others = allOnline.filter((p) => p && p.id && String(p.id) !== String(state.id));
 
     const matchOnline = (name) => {
@@ -373,21 +374,44 @@ export const ui = {
       }) || null;
     };
 
+    const statusNote = (p) => {
+      if (p.inMatch) return 'IN MATCH';
+      if (p.searching) return 'QUEUED';
+      if (myPartyId && p.partyId && p.partyId === myPartyId) return 'IN YOUR SQUAD';
+      if (p.guest) return 'GUEST · IN LOBBY';
+      return 'IN LOBBY';
+    };
+
+    const canInvite = (p) => {
+      if (!p?.id || p.inMatch) return false;
+      if (myPartyId && p.partyId && p.partyId === myPartyId) return false;
+      return true;
+    };
+
     if (live) {
       live.innerHTML = '';
       others.forEach((p) => {
+        const ok = canInvite(p);
         const row = document.createElement('div');
         row.className = 'friend-row';
         row.innerHTML =
           `<svg class="icon friend-status-icon online"><use href="#i-dot-filled"/></svg>` +
-          `<span class="friend-name">${p.name}<span class="rank-chip ${p.rank?.id || 'unranked'}" style="color:${p.rank?.color || '#9AA0AC'};border-color:${p.rank?.color || '#9AA0AC'}">${p.rank?.label || 'UNRANKED'}</span></span>` +
-          `<span class="friend-note">${p.inMatch ? 'IN MATCH' : p.searching ? 'QUEUED' : 'IN LOBBY'}</span>` +
-          `<button class="friend-btn invite">INVITE</button>`;
-        row.querySelector('.invite').onclick = () => window.inviteFriend(p.name);
+          `<span class="friend-name">${p.name}` +
+            (p.guest ? '<span class="guest-chip">GUEST</span>' : '') +
+            `<span class="rank-chip ${p.rank?.id || 'unranked'}" style="color:${p.rank?.color || '#9AA0AC'};border-color:${p.rank?.color || '#9AA0AC'}">${p.rank?.label || 'UNRANKED'}</span></span>` +
+          `<span class="friend-note">${statusNote(p)}</span>` +
+          `<button class="friend-btn invite"${ok ? '' : ' disabled'}>INVITE</button>`;
+        row.querySelector('.invite').onclick = () => {
+          if (!ok) {
+            ui.toast(p.inMatch ? `${p.name} is in a match` : `${p.name} is already with you`);
+            return;
+          }
+          window.invitePlayer(p);
+        };
         live.appendChild(row);
       });
       if (!live.children.length) {
-        live.innerHTML = '<div class="friends-empty">Nobody else is online right now.</div>';
+        live.innerHTML = '<div class="friends-empty">Nobody else is in the lobby right now.</div>';
       }
     }
     if (!wrap) return;
@@ -399,20 +423,25 @@ export const ui = {
     state.friends.forEach((name) => {
       const hit = matchOnline(name);
       const on = !!hit;
+      const ok = on && canInvite(hit);
       const row = document.createElement('div');
       row.className = 'friend-row';
       row.innerHTML =
         `<svg class="icon friend-status-icon ${on ? 'online' : 'offline'}"><use href="#${on ? 'i-dot-filled' : 'i-dot-ring'}"/></svg>` +
-        `<span class="friend-name">${name}</span>` +
-        `<span class="friend-note">${on ? 'ONLINE' : 'OFFLINE'}</span>` +
-        `<button class="friend-btn invite"${on ? '' : ' disabled'}>INVITE</button>` +
+        `<span class="friend-name">${name}${hit?.guest ? '<span class="guest-chip">GUEST</span>' : ''}</span>` +
+        `<span class="friend-note">${on ? statusNote(hit) : 'OFFLINE'}</span>` +
+        `<button class="friend-btn invite"${ok ? '' : ' disabled'}>INVITE</button>` +
         `<button class="friend-btn remove">&times;</button>`;
       row.querySelector('.invite').onclick = () => {
         if (!on) {
           ui.toast(`${name} is offline`);
           return;
         }
-        window.inviteFriend(hit.name);
+        if (!ok) {
+          ui.toast(`${hit.name} cannot be invited right now`);
+          return;
+        }
+        window.invitePlayer(hit);
       };
       row.querySelector('.remove').onclick = () => window.removeFriend(name);
       wrap.appendChild(row);
