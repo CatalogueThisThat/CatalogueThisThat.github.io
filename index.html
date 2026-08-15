@@ -4,58 +4,278 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cataloguethisthat</title>
-  <meta http-equiv="refresh" content="0; url=/free/">
+  <meta name="description" content="Cataloguethisthat — a catalogue of games.">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <style>
-    :root { --ink:#12141A; --paper:#F5F1E6; --cobalt:#2F6BFF; --ember:#FF6B2C; }
-    * { box-sizing: border-box; }
+    @font-face {
+      font-family: Horizon;
+      src: url('assets/Horizon.otf') format('opentype');
+      font-weight: 700;
+      font-display: swap;
+    }
+    :root {
+      --ink: #0c0e14;
+      --panel: #151821;
+      --stroke: #2a3040;
+      --paper: #F5F1E6;
+      --mute: #8B92A1;
+      --cobalt: #2F6BFF;
+      --ember: #FF6B2C;
+      --font-display: Horizon, Syne, sans-serif;
+      --font-mono: "Space Mono", monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
-      margin: 0; min-height: 100vh; display: grid; place-items: center;
-      background: radial-gradient(ellipse at 50% 20%, #1a2030, var(--ink) 70%);
-      color: var(--paper); font-family: Inter, system-ui, sans-serif;
-      padding: 24px;
+      font-family: var(--font-mono);
+      background: var(--ink);
+      color: var(--paper);
+      overflow-x: hidden;
+      min-height: 100vh;
     }
-    .wrap { width: min(520px, 100%); text-align: center; }
-    .brand {
-      font-family: Inter, sans-serif; font-weight: 700; font-size: clamp(28px, 6vw, 42px);
-      letter-spacing: 0.5px; margin: 0 0 8px;
+
+    /* ---------- INTRO ---------- */
+    #intro {
+      position: fixed; inset: 0; z-index: 40;
+      display: grid; place-items: center;
+      background:
+        radial-gradient(ellipse at 50% 35%, #1a2440 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 80%, rgba(255,107,44,0.12) 0%, transparent 40%),
+        var(--ink);
+      transition: opacity 0.7s ease, visibility 0.7s;
     }
-    .kicker {
-      font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: 3px;
-      color: #9AA0AC; margin-bottom: 28px;
+    #intro.done {
+      opacity: 0; visibility: hidden; pointer-events: none;
     }
-    .card {
-      display: block; text-decoration: none; color: inherit;
-      border: 3px solid #2A2F3A; background: #1A1D24; padding: 22px 20px;
-      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    .intro-stage {
+      text-align: center; padding: 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
     }
-    .card:hover { transform: translateY(-2px); border-color: var(--cobalt); background: #20242E; }
-    .game {
-      font-family: Inter, sans-serif; font-weight: 700; font-size: 28px; letter-spacing: 1px;
-      color: var(--cobalt); margin: 0 0 6px;
+    .intro-mark {
+      width: 72px; height: 72px; border: 3px solid var(--paper);
+      display: grid; place-items: center;
+      font-family: var(--font-display); font-weight: 800; font-size: 34px;
+      letter-spacing: -1px;
+      opacity: 0; transform: scale(0.6) rotate(-8deg);
+      animation: markIn 0.7s cubic-bezier(0.16, 1.1, 0.3, 1) 0.15s forwards;
+      box-shadow: 0 0 40px rgba(47,107,255,0.35);
+      background: linear-gradient(145deg, rgba(47,107,255,0.35), rgba(255,107,44,0.2));
     }
-    .blurb {
-      font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: 0.4px;
-      color: #9AA0AC; line-height: 1.45; margin: 0;
+    @keyframes markIn {
+      to { opacity: 1; transform: scale(1) rotate(0); }
     }
-    .path {
-      margin-top: 18px; font-family: "Space Mono", monospace; font-size: 11px;
-      letter-spacing: 1px; color: #9AA0AC;
+    .intro-line {
+      overflow: hidden; height: 1.15em;
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(36px, 8vw, 72px); letter-spacing: 1px; line-height: 1.15;
     }
-    a.direct { color: var(--ember); }
+    .intro-line span {
+      display: inline-block;
+      transform: translateY(110%);
+      animation: riseIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .intro-line.catalogue span { animation-delay: 0.55s; }
+    .intro-line.thisthat span { animation-delay: 0.85s; color: var(--cobalt); }
+    @keyframes riseIn {
+      to { transform: translateY(0); }
+    }
+    .intro-rule {
+      width: 0; height: 3px; background: linear-gradient(90deg, var(--cobalt), var(--ember));
+      margin-top: 4px;
+      animation: ruleGrow 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1.15s forwards;
+    }
+    @keyframes ruleGrow { to { width: min(280px, 55vw); } }
+    .intro-sub {
+      font-size: 11px; letter-spacing: 4px; color: var(--mute);
+      opacity: 0; animation: fadeUp 0.5s ease 1.45s forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .intro-skip {
+      position: absolute; top: 18px; right: 18px;
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;
+      padding: 10px 14px; border: 2px solid var(--stroke);
+      background: rgba(12,14,20,0.7); color: var(--paper); cursor: pointer;
+      opacity: 0; animation: fadeUp 0.4s ease 0.8s forwards;
+    }
+    .intro-skip:hover { border-color: var(--cobalt); background: var(--cobalt); }
+
+    /* ---------- SHELF ---------- */
+    #shelf {
+      min-height: 100vh;
+      opacity: 0; transform: translateY(16px);
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(47,107,255,0.16) 0%, transparent 45%),
+        radial-gradient(ellipse at 90% 100%, rgba(255,107,44,0.1) 0%, transparent 40%),
+        linear-gradient(180deg, #10131c 0%, var(--ink) 40%);
+    }
+    #shelf.on {
+      opacity: 1; transform: none; pointer-events: auto;
+      transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .shelf-top {
+      padding: clamp(28px, 5vw, 48px) clamp(20px, 4vw, 40px) 12px;
+      display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px;
+    }
+    .shelf-brand {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(28px, 5vw, 44px); letter-spacing: 0.5px; line-height: 1;
+    }
+    .shelf-brand em {
+      font-style: normal; color: var(--cobalt);
+    }
+    .shelf-kicker {
+      font-size: 11px; letter-spacing: 3px; color: var(--mute); margin-top: 8px;
+    }
+    .shelf-count {
+      font-size: 11px; letter-spacing: 2px; color: var(--mute);
+      padding: 8px 12px; border: 2px solid var(--stroke);
+    }
+    .shelf-grid {
+      padding: 20px clamp(20px, 4vw, 40px) 48px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+      max-width: 1100px;
+    }
+    .game-tile {
+      display: flex; flex-direction: column;
+      text-decoration: none; color: inherit;
+      background: var(--panel); border: 3px solid var(--stroke);
+      overflow: hidden;
+      transform: translateY(18px); opacity: 0;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    #shelf.on .game-tile {
+      animation: tileIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: calc(0.15s + var(--i, 0) * 0.08s);
+    }
+    @keyframes tileIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .game-tile:hover {
+      border-color: var(--cobalt);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(47,107,255,0.25);
+    }
+    .game-tile:focus-visible {
+      outline: 3px solid var(--ember); outline-offset: 3px;
+    }
+    .game-thumb {
+      aspect-ratio: 16 / 9; width: 100%;
+      background: #0a0b10 center/cover no-repeat;
+      position: relative; overflow: hidden;
+    }
+    .game-thumb::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(12,14,20,0.55) 100%);
+      opacity: 0.85; pointer-events: none;
+    }
+    .game-tile:hover .game-thumb {
+      filter: brightness(1.08);
+    }
+    .game-play {
+      position: absolute; right: 12px; bottom: 12px; z-index: 1;
+      font-family: var(--font-mono); font-weight: 700; font-size: 10px; letter-spacing: 2px;
+      padding: 8px 12px; background: var(--cobalt); color: var(--paper); border: 2px solid #0A0B0E;
+      transform: translateY(8px); opacity: 0;
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+    .game-tile:hover .game-play { transform: none; opacity: 1; }
+    .game-meta { padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 6px; }
+    .game-tag {
+      font-size: 10px; letter-spacing: 2px; color: var(--ember); font-weight: 700;
+    }
+    .game-title {
+      font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: 0.5px;
+    }
+    .game-blurb {
+      font-size: 11px; letter-spacing: 0.3px; color: var(--mute); line-height: 1.45;
+    }
+
+    @media (max-width: 560px) {
+      .game-play { opacity: 1; transform: none; }
+      .intro-skip { top: 12px; right: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #intro, .intro-mark, .intro-line span, .intro-rule, .intro-sub, .intro-skip, .game-tile {
+        animation: none !important; opacity: 1 !important; transform: none !important; width: auto;
+      }
+      .intro-rule { width: min(280px, 55vw); }
+      #intro { display: none; }
+      #shelf { opacity: 1; transform: none; pointer-events: auto; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1 class="brand">Cataloguethisthat</h1>
-    <div class="kicker">GAME CATALOGUE</div>
-    <a class="card" href="/free/">
-      <div class="game">MATCH ROOM</div>
-      <p class="blurb">Arena shooter · ranks · shop · squads</p>
-    </a>
-    <p class="path">Direct: <a class="direct" href="/free/">cataloguethisthat.github.io/free</a></p>
+  <div id="intro" role="dialog" aria-label="Cataloguethisthat intro">
+    <button type="button" class="intro-skip" id="introSkip">SKIP</button>
+    <div class="intro-stage">
+      <div class="intro-mark" aria-hidden="true">C</div>
+      <div class="intro-line catalogue"><span>CATALOGUE</span></div>
+      <div class="intro-line thisthat"><span>THIS THAT</span></div>
+      <div class="intro-rule" aria-hidden="true"></div>
+      <div class="intro-sub">A CATALOGUE OF GAMES</div>
+    </div>
   </div>
+
+  <main id="shelf" aria-label="Game catalogue">
+    <header class="shelf-top">
+      <div>
+        <h1 class="shelf-brand">Catalogue <em>This That</em></h1>
+        <div class="shelf-kicker">PICK A GAME</div>
+      </div>
+      <div class="shelf-count">1 TITLE</div>
+    </header>
+
+    <div class="shelf-grid">
+      <a class="game-tile" href="/free/" style="--i:0" aria-label="Play Match Room">
+        <div class="game-thumb" style="background-image:url('assets/match-room-thumb.jpg')">
+          <span class="game-play">PLAY</span>
+        </div>
+        <div class="game-meta">
+          <div class="game-tag">FREE · ARENA</div>
+          <div class="game-title">Match Room</div>
+          <p class="game-blurb">Squad up, climb ranks, spend loot. Cobalt vs Ember.</p>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const intro = document.getElementById('intro');
+      const shelf = document.getElementById('shelf');
+      const skip = document.getElementById('introSkip');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const seen = sessionStorage.getItem('ctt-intro') === '1';
+      let finished = false;
+
+      function finish() {
+        if (finished) return;
+        finished = true;
+        try { sessionStorage.setItem('ctt-intro', '1'); } catch (e) {}
+        intro.classList.add('done');
+        shelf.classList.add('on');
+      }
+
+      if (reduce || seen) {
+        intro.classList.add('done');
+        shelf.classList.add('on');
+        return;
+      }
+
+      skip.addEventListener('click', finish);
+      // Auto-advance after the beat lands
+      setTimeout(finish, 2800);
+    })();
+  </script>
 </body>
 </html>
